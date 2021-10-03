@@ -177,20 +177,7 @@ function show_intro_2(){
 
 function the_end(){
   console.log("the end")
-  sub_data = JSON.parse(localStorage.getItem('subject_data'));
-  console.log(sub_data)
-  // value = {
-  //   'status': "The End",
-  //   'ind' : counter,
-  //   'last_step' : last_step,
-  //   'reaction_time': '',
-  //   'burst_counter':  burst_counter,
-  //   'collect_counter': collect_counter
-  // }
-  // sub_data[last_step] = value
   
-  // localStorage.setItem(storage_name, JSON.stringify(sub_data));
-  console.log("-----")
   $('#main').remove();
   var end = document.createElement('section');
   end.style.cssText = 'text-align:center;';
@@ -199,5 +186,4 @@ function the_end(){
   h1.innerHTML = "THE END"
   end.append(h1)
   $('body').append(end)
-  console.log("----")
 }
