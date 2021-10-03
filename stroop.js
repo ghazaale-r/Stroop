@@ -38,7 +38,7 @@ var last_text = null
 var color = null
 var text = null
 
-var maxCount = 200;
+var maxCount = 10;
 var intervalMillisec = 1000;
 var timeoutId;
 
@@ -85,7 +85,7 @@ function next(){
     if (last_id <= maxCount) {
         timeoutId = window.setTimeout(show_plus, intervalMillisec);
     } else {
-        end();
+        the_end();
     }
 }
 
@@ -109,6 +109,7 @@ function generate(){
   arr = shuffle(expanded)
   return arr
 }
+
 function shuffle(array) {
   let currentIndex = array.length,  randomIndex;
 
@@ -172,4 +173,31 @@ function start() {
 function show_intro_2(){
   $('#intro_1').hide();
   $('#intro_2').show();
+}
+
+function the_end(){
+  console.log("the end")
+  sub_data = JSON.parse(localStorage.getItem('subject_data'));
+  console.log(sub_data)
+  // value = {
+  //   'status': "The End",
+  //   'ind' : counter,
+  //   'last_step' : last_step,
+  //   'reaction_time': '',
+  //   'burst_counter':  burst_counter,
+  //   'collect_counter': collect_counter
+  // }
+  // sub_data[last_step] = value
+  
+  // localStorage.setItem(storage_name, JSON.stringify(sub_data));
+  console.log("-----")
+  $('#main').remove();
+  var end = document.createElement('section');
+  end.style.cssText = 'text-align:center;';
+  var h1 = document.createElement('h1');
+  h1.style.cssText = 'font-size:12rem;';
+  h1.innerHTML = "THE END"
+  end.append(h1)
+  $('body').append(end)
+  console.log("----")
 }
