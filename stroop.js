@@ -22,11 +22,11 @@ var incong = {
 } 
 
 var neutr = {
-  "red": ["قربی", "آردی","رزژر"],
-  "blue": ["قربی", "آردی","رزژر"],
-  "green": ["قربی", "آردی","رزژر"],
-  "yellow": ["قربی", "آردی","رزژر"],
-}   
+  "red": ["قربی", "آرزی","یازد","زرمق"],
+  "blue": ["قربی", "آرزی","یازد","زرمق"],
+  "green": ["قربی", "آرزی","یازد","زرمق"],
+  "yellow": ["قربی", "آرزی","یازد","زرمق"],
+}  
 
 var the_list = null
 the_list = generate()
@@ -38,16 +38,20 @@ var last_text = null
 var color = null
 var text = null
 
-var maxCount = 10;
+var maxCount = 200;
 var intervalMillisec = 1000;
 var timeoutId;
 
 
 function next(){
     last_id += 1
+    if (last_id < maxCount) {
+        timeoutId = window.setTimeout(show_plus, intervalMillisec);
+    } else {
+        the_end();
+    }
     $('#answers').hide();
     choices = the_list[last_id]
-    console.log(choices)
     if (choices[0] == 1){
       selection = cong
     }else if (choices[0] == 2){
@@ -68,9 +72,7 @@ function next(){
             text = items[0]
         }else {
             ind = Math.floor(10 * Math.random());
-            console.log("ind2:", ind) 
             while(ind>=items.length){
-                console.log("ind2:", ind) 
                 ind = Math.floor(10 * Math.random()); 
             }
             text = items[ind]
@@ -79,14 +81,9 @@ function next(){
     last_color = color
     last_text = text
     
-    console.log(color, text)
     
     show_word(color, text)
-    if (last_id <= maxCount) {
-        timeoutId = window.setTimeout(show_plus, intervalMillisec);
-    } else {
-        the_end();
-    }
+    
 }
 
 function show_word(c, t){
@@ -149,8 +146,13 @@ function set_reaction_time(){
   localStorage.setItem('subject_data', JSON.stringify(sub_data));
   next();
 }
-
+var person = ""
 $(document).ready(function(){
+	person = prompt("Please enter your name or id");
+	while (person == null){
+		person = prompt("Please enter your name or id");
+	}
+  
   $('.item').click(set_reaction_time)
   $('#start').click(start);
   $('#next').click(show_intro_2);
@@ -177,7 +179,8 @@ function show_intro_2(){
 
 function the_end(){
   console.log("the end")
-  
+  sub_data = JSON.parse(localStorage.getItem('subject_data'));
+  export_csv(sub_data)
   $('#main').remove();
   var end = document.createElement('section');
   end.style.cssText = 'text-align:center;';
@@ -186,4 +189,37 @@ function the_end(){
   h1.innerHTML = "THE END"
   end.append(h1)
   $('body').append(end)
+}
+
+
+function export_csv(arrayData) {
+  let header =  ["state","color","text","reaction_time","response"].join(",") + '\n';
+  let csv = header;
+  for (var k in arrayData){
+      let row = [];
+      let obj = arrayData[k]
+      for (key in obj) {
+          if (obj.hasOwnProperty(key)) {
+              row.push(obj[key]);
+          }
+      }
+      csv += row.join(",")+"\n";
+  };
+
+	let storage_name = new Date().getTime() / 1000;
+	console.log('subject-' +person+ "_"+storage_name + '.csv');
+	console.log(csv);
+
+	$.ajax({
+		type: 'post',
+		cache: false,
+		url: 'save_data.php',
+		data: { filename: 'subject-' + person+"_"+ storage_name + '.csv', filedata: csv },
+		success: function (response) {
+			console.log(response);
+		},
+		error: function () {
+			console.log('Error');
+		},
+	});
 }
